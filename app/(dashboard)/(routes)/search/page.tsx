@@ -5,10 +5,11 @@ import { Categories } from "./_components/categories";
 import { SearchInput } from "@/components/search-input";
 import { getCourse } from "@/actions/get-courses";
 import { CoursesList } from "@/components/courses-list";
+import { Suspense } from "react";
 
 interface SearchPageProps {
   searchParams: Promise<{
-    title?: string; 
+    title?: string;
     categoryId?: string;
   }>;
 }
@@ -31,14 +32,16 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 
   const courses = await getCourse({
     userId,
-    title,    
+    title,
     categoryId,
   });
 
   return (
     <>
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
-        <SearchInput />
+        <Suspense fallback={<div>Loading search input...</div>}>
+          <SearchInput />
+        </Suspense>
       </div>
       <div className="p-6 space-y-4">
         <Categories items={categories} />
