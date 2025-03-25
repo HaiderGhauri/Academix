@@ -40,7 +40,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
     <>
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
         <Suspense fallback={<div>Loading search input...</div>}>
-          <SearchInput />
+          <SearchInput initialTitle={title}/>
         </Suspense>
       </div>
       <div className="p-6 space-y-4">
@@ -52,3 +52,5 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 };
 
 export default SearchPage;
+
+export const dynamic = "force-dynamic";
