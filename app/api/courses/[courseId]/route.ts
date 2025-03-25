@@ -3,17 +3,18 @@ import { auth } from "@clerk/nextjs/server";
 import Mux from "@mux/mux-node";
 import { NextResponse } from "next/server";
 
-const { Video } = new Mux({
+const { video } = new Mux({
   tokenId: process.env.MUX_TOKEN_ID!,
   tokenSecret: process.env.MUX_TOKEN_SECRET!,
 });
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
         const { userId } = await auth();
+        const { courseId } = await params;
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status:401 })
@@ -21,7 +22,7 @@ export async function DELETE(
 
         const course = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId: userId
             },
             include: {
@@ -39,13 +40,13 @@ export async function DELETE(
 
         for (const chapter of course.chapters) {
             if (chapter.muxData?.assetId) {
-                await Video.Assests.del(chapter.muxData.assetId);
+                await video.assets.delete(chapter.muxData.assetId);
             }
         }
 
         const deletedCourse = await db.course.delete({
             where: {
-                id: params.courseId
+                id: courseId
             }
         });
 
@@ -59,11 +60,11 @@ export async function DELETE(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
         const { userId } = await auth();
-        const { courseId } = params;
+        const { courseId } = await params;
         const values = await req.json();
 
         if (!userId) {
