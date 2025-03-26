@@ -31,18 +31,8 @@ export async function PATCH(
                 courseId: courseId
             }
         });
-
-        // const muxData = await db.muxData.findUnique({
-        //     where: {
-        //         chapterId: chapterId,
-        //     }
-        // });
-
-        // if (!chapter || !muxData || !chapter.title || !chapter.description || !chapter.videoUrl) {
-        //     return new NextResponse("Missing required fields", { status: 400 })
-        // }\
         
-        if (!chapter || !chapter.title || !chapter.description) {
+        if (!chapter || !chapter.title || !chapter.description || !chapter.videoUrl) {
             return new NextResponse("Missing required fields", { status: 400 })
         }  
         

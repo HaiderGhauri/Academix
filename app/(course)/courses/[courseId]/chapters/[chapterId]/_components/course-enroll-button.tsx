@@ -20,17 +20,21 @@ export const CourseEnrollButton = ({
     const onClick = async () => {
         try {
             setIsLoading(true);
+            console.log("clicked");
 
             const response = await axios.post(`/api/courses/${courseId}/checkout`);
 
+            console.log(response.data.url);
+
             window.location.assign(response.data.url);
 
-        } catch  {
+        } catch  { 
             toast.error("Something went wrong");
         } finally {
             setIsLoading(false);
         }
     }
+    
     return (
         <Button
             onClick={onClick}

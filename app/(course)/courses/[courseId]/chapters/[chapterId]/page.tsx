@@ -27,7 +27,6 @@ const ChapterIdPage = async ({
   const {
     chapter,
     course,
-    muxData,
     attachments,
     nextChapter,
     userProgress,
@@ -62,10 +61,10 @@ const ChapterIdPage = async ({
                 courseId={courseId}
                 title={chapter.title}
                 nextChapterId={nextChapter?.id}
-                // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-                playbackId={muxData?.playbackId!}
+                videoUrl={chapter.videoUrl!}
                 isLocked={isLocked}
                 completeOnEnd={completeOnEnd}
+                purchase={!!purchase}
             />
         </div>
         <div>
@@ -82,7 +81,7 @@ const ChapterIdPage = async ({
                     />
                 ) : (
                     <CourseEnrollButton
-                        courseId={chapterId}
+                        courseId={courseId}
                         price={course.price!}
                     />
                 )}

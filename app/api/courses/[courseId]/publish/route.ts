@@ -20,11 +20,7 @@ export async function PATCH(
                 userId
             },
             include: {
-                chapters: {
-                    include: {
-                        muxData: true,
-                    }
-                }
+                chapters: true
             }
         });
 
@@ -34,10 +30,7 @@ export async function PATCH(
 
         const hasPublishedChapter = course.chapters.some((chapter) => chapter.isPublished);
 
-        // if (!course.title || !course.description || !course.imageUrl || !course.categoryId || !course.price || !hasPublishedChapter ){
-        //     return new NextResponse("Missing required fields", { status: 401 })
-        // }
-        if (!course.title || !course.description || !course.categoryId || !course.price || !hasPublishedChapter ){
+        if (!course.title || !course.description || !course.imageUrl || !course.categoryId || !course.price || !hasPublishedChapter ){
             return new NextResponse("Missing required fields", { status: 401 })
         }
 

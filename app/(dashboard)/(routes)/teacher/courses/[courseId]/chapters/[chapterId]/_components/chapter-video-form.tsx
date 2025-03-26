@@ -6,15 +6,15 @@ import { useState } from "react";
 import { Pencil, PlusCircle, VideoIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter, MuxData } from "@prisma/client";
+import { Chapter } from "@prisma/client";
 import { FileUpload } from "@/components/file-upload";
 
 import { Button } from "@/components/ui/button";
-import MuxPlayer from "@mux/mux-player-react";
+import ReactPlayer from "react-player";
 
 
 interface ChapterVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null};
+  initialData: Chapter;
   courseId: string;
   chapterId: string;
 }
@@ -37,11 +37,20 @@ export const ChapterVideoForm = ({
   
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
+      console.log("Sending PATCH:", { courseId, chapterId, values });
+      const response = await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
+      router.refresh();
+      console.log("CHAPTER_VIDEO_RESPONSE:", response.data);
       toast.success("Chapter updated");
       toggleEdit();
-      router.refresh();
-    } catch {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Patch error:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        stack: error.stack,
+      });
       toast.error("Something went wrong");
     }
   };
@@ -78,8 +87,19 @@ export const ChapterVideoForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-           <MuxPlayer 
-            playbackId={initialData?.muxData?.playbackId || ""}
+           <ReactPlayer 
+            src={initialData.videoUrl} 
+            controlsList="nodownload" 
+            width="100%"
+            height="100%" 
+            playing={false}
+            config={{
+              file: {
+                attributes: {
+                  controlsList: "nodownload nopictureinpicture",
+                },
+              },
+              }}
            />
           </div>
         )
